@@ -1,18 +1,15 @@
 import { motion } from 'motion/react';
-import type { ReactNode } from 'react';
 import type { Mood, Environment } from '../types';
 import { MOOD_PALETTES, ENV_PALETTES } from '../theme';
 
 interface GradientBackgroundProps {
   mood?: Mood;
   environment?: Environment;
-  children?: ReactNode;
 }
 
 export default function GradientBackground({
   mood,
   environment,
-  children,
 }: GradientBackgroundProps) {
   const palette = mood
     ? MOOD_PALETTES[mood]
@@ -27,8 +24,6 @@ export default function GradientBackground({
         background: `linear-gradient(160deg, ${palette.from}, ${palette.to})`,
       }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
-    >
-      {children}
-    </motion.div>
+    />
   );
 }

@@ -42,7 +42,8 @@ export default function App() {
   };
 
   return (
-    <GradientBackground mood={context.mood} environment={context.environment}>
+    <div className="relative min-h-svh">
+      <GradientBackground mood={context.mood} environment={context.environment} />
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -62,6 +63,6 @@ export default function App() {
           )}
         </motion.div>
       </AnimatePresence>
-    </GradientBackground>
+    </div>
   );
 }
