@@ -17,11 +17,12 @@ export default function HallwayBackdrop() {
         <line key={x} x1={x} y1="0" x2={x} y2="170" stroke={PANEL_LINE} strokeWidth="2" />
       ))}
 
-      {[60, 150, 240].map((x) => (
+      {/* between the door columns, not behind the paintings above each door */}
+      {[100, 200].map((x) => (
         <g key={x}>
-          <circle cx={x} cy="28" r="10" fill={GLOW} opacity="0.6" />
-          <circle cx={x} cy="28" r="5" fill={SCONCE} />
-          <rect x={x - 1.5} y="32" width="3" height="10" fill={SCONCE} />
+          <circle cx={x} cy="20" r="9" fill={GLOW} opacity="0.6" />
+          <circle cx={x} cy="20" r="4.5" fill={SCONCE} />
+          <rect x={x - 1.5} y="23" width="3" height="9" fill={SCONCE} />
         </g>
       ))}
 

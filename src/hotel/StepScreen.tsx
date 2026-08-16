@@ -6,10 +6,11 @@ import HotelCheckIn from './screens/CheckIn';
 import HotelConcierge from './screens/Concierge';
 import HotelElevator from './screens/Elevator';
 import HotelFloor from './screens/Floor';
+import HotelPastStays from './screens/PastStays';
 import { deriveFloor } from './floor';
 import type { Mood, Recommendation, UserContext } from '../types';
 
-type Step = 'mood' | 'questions' | 'loading' | 'results';
+type Step = 'mood' | 'questions' | 'loading' | 'results' | 'stays';
 
 interface StepScreenProps {
   hotelUI: boolean;
@@ -20,7 +21,10 @@ interface StepScreenProps {
   onMoodSelect: (mood: Mood) => void;
   onQuestionsComplete: (answers: Omit<UserContext, 'mood'>) => void;
   onRestart: () => void;
+  onBackToMood: () => void;
+  onBackToQuestions: () => void;
   onElevatorArrived: () => void;
+  onViewStays: () => void;
 }
 
 export default function StepScreen({
@@ -32,18 +36,24 @@ export default function StepScreen({
   onMoodSelect,
   onQuestionsComplete,
   onRestart,
+  onBackToMood,
+  onBackToQuestions,
   onElevatorArrived,
+  onViewStays,
 }: StepScreenProps) {
   if (step === 'mood') {
     return hotelUI ? (
-      <HotelCheckIn onSelect={onMoodSelect} />
+      <HotelCheckIn onSelect={onMoodSelect} onViewStays={onViewStays} />
     ) : (
       <MoodScreen onSelect={onMoodSelect} />
     );
   }
+  if (step === 'stays') {
+    return hotelUI ? <HotelPastStays onBack={onRestart} /> : null;
+  }
   if (step === 'questions') {
     return hotelUI ? (
-      <HotelConcierge onComplete={onQuestionsComplete} />
+      <HotelConcierge onComplete={onQuestionsComplete} onBack={onBackToMood} />
     ) : (
       <QuestionsScreen onComplete={onQuestionsComplete} />
     );
@@ -61,13 +71,15 @@ export default function StepScreen({
       <LoadingScreen />
     );
   }
-  if (hotelUI && context.mood && context.environment) {
+  if (hotelUI && context.mood && context.environment && context.minutesAvailable) {
     return (
       <HotelFloor
         recommendations={recommendations}
         mood={context.mood}
         environment={context.environment}
+        minutesAvailable={context.minutesAvailable}
         onRestart={onRestart}
+        onAdjustAnswers={onBackToQuestions}
       />
     );
   }

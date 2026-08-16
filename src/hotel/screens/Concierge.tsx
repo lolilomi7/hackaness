@@ -6,9 +6,10 @@ import ConciergeAvatar from '../components/ConciergeAvatar';
 
 interface ConciergeProps {
   onComplete: (answers: Answers) => void;
+  onBack: () => void;
 }
 
-export default function Concierge({ onComplete }: ConciergeProps) {
+export default function Concierge({ onComplete, onBack }: ConciergeProps) {
   const [turnIndex, setTurnIndex] = useState(0);
   const [transcript, setTranscript] = useState<{ prompt: string; reply: string }[]>([]);
   const [answers, setAnswers] = useState<Partial<Answers>>({});
@@ -26,11 +27,37 @@ export default function Concierge({ onComplete }: ConciergeProps) {
     }
   };
 
+  // Going back re-asks the previous question rather than restoring its old
+  // answer, so re-selecting always drives the next turn forward correctly.
+  const handleBack = () => {
+    if (turnIndex === 0) {
+      onBack();
+      return;
+    }
+    const prevIndex = turnIndex - 1;
+    setTranscript((t) => t.slice(0, -1));
+    setAnswers((a) => {
+      const next = { ...a };
+      delete next[TURNS[prevIndex].key];
+      return next;
+    });
+    setTurnIndex(prevIndex);
+  };
+
   return (
     <div
       className="flex min-h-svh flex-col items-center gap-4 p-6"
       style={{ background: `linear-gradient(180deg, ${HOTEL_COLORS.panelDeep}, ${HOTEL_COLORS.panel})` }}
     >
+      <button
+        type="button"
+        onClick={handleBack}
+        className="self-start text-sm"
+        style={{ color: HOTEL_COLORS.brass }}
+      >
+        &larr; Back
+      </button>
+
       {transcript.length > 0 && (
         <div className="flex w-full max-w-xs flex-col gap-2 pt-2">
           {transcript.map((t, i) => (

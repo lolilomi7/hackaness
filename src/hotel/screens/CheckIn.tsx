@@ -4,6 +4,7 @@ import { HOTEL_COLORS, HOTEL_SERIF } from '../theme';
 
 interface CheckInProps {
   onSelect: (mood: Mood) => void;
+  onViewStays: () => void;
 }
 
 const GUESTS: Array<{ mood: Mood; title: string; note: string }> = [
@@ -11,46 +12,34 @@ const GUESTS: Array<{ mood: Mood; title: string; note: string }> = [
   { mood: 'sad', title: 'The Quiet Guest', note: 'Carrying something heavy' },
   { mood: 'angry', title: 'The Storm-Weathered Guest', note: 'Needs to let off steam' },
   { mood: 'happy', title: 'The Bright Guest', note: 'Riding a good moment' },
+  { mood: 'calm', title: 'The Settled Guest', note: 'Easy and unhurried' },
+  { mood: 'tired', title: 'The Worn-Out Guest', note: 'Running low' },
+  { mood: 'excited', title: 'The Eager Guest', note: 'Buzzing with energy' },
+  { mood: 'unsure', title: 'The Undecided Guest', note: "Not sure how you're feeling right now" },
 ];
 
-export default function CheckIn({ onSelect }: CheckInProps) {
+export default function CheckIn({ onSelect, onViewStays }: CheckInProps) {
   return (
     <div
-      className="flex min-h-svh flex-col items-center justify-center gap-10 p-6"
+      className="flex min-h-svh flex-col items-center justify-center gap-4 p-4"
       style={{
         background: `radial-gradient(120% 100% at 50% 0%, ${HOTEL_COLORS.panel}, ${HOTEL_COLORS.panelDeep})`,
       }}
     >
-      <div
-        className="flex flex-col items-center gap-2 rounded-2xl border px-8 py-6 text-center"
-        style={{ background: HOTEL_COLORS.panel, borderColor: HOTEL_COLORS.brassDim }}
-      >
-        <p
-          className={`${HOTEL_SERIF} text-sm uppercase tracking-[0.35em]`}
-          style={{ color: HOTEL_COLORS.brass }}
-        >
-          HackNess Hotel
-        </p>
+      <div className="flex w-full max-w-lg flex-col items-center gap-1 text-center">
+        <img src="/hackness-wordmark.png" alt="HackNess" className="h-16 w-auto sm:h-20" />
         <p
           className={`${HOTEL_SERIF} text-xs uppercase tracking-[0.3em]`}
           style={{ color: HOTEL_COLORS.parchmentDim }}
         >
           Front Desk
         </p>
-        <h1
-          className={`${HOTEL_SERIF} text-3xl`}
-          style={{ color: HOTEL_COLORS.parchment }}
-        >
-          Welcome
-        </h1>
-        <p className="max-w-xs text-sm" style={{ color: HOTEL_COLORS.parchmentDim }}>
-          This hotel finds you something small to do right now. Our bunny concierge will ask a
-          few questions, then take you up to the floor that's made for you.
+        <p className="text-sm" style={{ color: HOTEL_COLORS.parchmentDim }}>
+          How are you arriving today?
         </p>
-        <p style={{ color: HOTEL_COLORS.parchmentDim }}>How are you arriving today?</p>
       </div>
 
-      <div className="flex w-full max-w-sm flex-col">
+      <div className="flex w-full max-w-lg flex-wrap justify-center gap-2">
         {GUESTS.map((guest, i) => (
           <motion.button
             key={guest.mood}
@@ -58,28 +47,37 @@ export default function CheckIn({ onSelect }: CheckInProps) {
             onClick={() => onSelect(guest.mood)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.4 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex flex-col items-start gap-0.5 border-b py-4 text-left"
-            style={{ borderColor: HOTEL_COLORS.brassDim }}
+            transition={{ delay: i * 0.05, duration: 0.3 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex min-w-[230px] flex-1 basis-[45%] flex-col items-start gap-0.5 rounded-xl border px-4 py-2.5 text-left"
+            style={{ borderColor: HOTEL_COLORS.brassDim, background: HOTEL_COLORS.panel }}
           >
-            <span className="flex items-center gap-2">
-              <span className={`${HOTEL_SERIF} text-lg`} style={{ color: HOTEL_COLORS.parchment }}>
-                {guest.title}
-              </span>
+            <span className={`${HOTEL_SERIF} text-sm`} style={{ color: HOTEL_COLORS.parchment }}>
+              {guest.title}
+            </span>
+            <span className="flex items-center gap-1.5">
               <span
-                className="rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide"
+                className="whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide"
                 style={{ borderColor: HOTEL_COLORS.brass, color: HOTEL_COLORS.brass }}
               >
                 {guest.mood}
               </span>
-            </span>
-            <span className="text-sm" style={{ color: HOTEL_COLORS.parchmentDim }}>
-              {guest.note}
+              <span className="text-xs" style={{ color: HOTEL_COLORS.parchmentDim }}>
+                {guest.note}
+              </span>
             </span>
           </motion.button>
         ))}
       </div>
+
+      <button
+        type="button"
+        onClick={onViewStays}
+        className="text-xs underline underline-offset-2"
+        style={{ color: HOTEL_COLORS.parchmentDim }}
+      >
+        Past stays
+      </button>
     </div>
   );
 }
