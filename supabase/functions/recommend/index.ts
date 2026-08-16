@@ -15,7 +15,7 @@ const CORS_HEADERS = {
 };
 
 // Kept in sync with the enums in src/types.ts for runtime validation.
-const MOODS = ['anxious', 'sad', 'angry', 'happy'];
+const MOODS = ['anxious', 'sad', 'angry', 'happy', 'calm', 'tired', 'excited', 'unsure'];
 const ENERGIES = ['low', 'medium', 'high'];
 const ENVIRONMENTS = ['urban', 'suburban', 'countryside', 'coastal', 'mountains'];
 const MINUTES = [5, 30, 60];

@@ -6,7 +6,7 @@ interface RoomDetailsProps {
   recommendation: Recommendation;
 }
 
-// Renders 5 direct grid items (no wrapping div) so a subgrid parent can
+// Renders 4 direct grid items (no wrapping div) so a subgrid parent can
 // align each field's row across all 3 suggestion columns.
 export default function RoomDetails({ roomNumber, recommendation }: RoomDetailsProps) {
   return (
@@ -26,9 +26,6 @@ export default function RoomDetails({ roomNumber, recommendation }: RoomDetailsP
       <p className="text-center text-sm" style={{ color: HOTEL_COLORS.parchment }}>
         <span className="italic">First: </span>
         {recommendation.firstStep}
-      </p>
-      <p className="text-center text-xs" style={{ color: HOTEL_COLORS.brass }}>
-        {recommendation.durationMinutes} minutes
       </p>
     </>
   );

@@ -81,4 +81,84 @@ export const FALLBACK: Record<Mood, Recommendation[]> = {
       durationMinutes: 10,
     },
   ],
+  calm: [
+    {
+      title: 'Notice five things',
+      whyThisFits: 'A slow, easy scan of your surroundings keeps a calm mood settled.',
+      firstStep: 'Look around and silently name five things you can see.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Stretch it out',
+      whyThisFits: 'Gentle movement matches your current pace without disrupting it.',
+      firstStep: 'Reach your arms overhead and hold a slow stretch for a few breaths.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Tidy one small spot',
+      whyThisFits: 'A calm state is a good time for a small, satisfying reset.',
+      firstStep: 'Pick one surface nearby and clear it off.',
+      durationMinutes: 10,
+    },
+  ],
+  tired: [
+    {
+      title: 'Close your eyes for a bit',
+      whyThisFits: 'Sometimes the most useful thing is simply resting your eyes.',
+      firstStep: 'Sit or lie back and close your eyes for a few minutes, no phone.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Have a glass of water',
+      whyThisFits: 'A quick, low-effort reset that costs almost no energy.',
+      firstStep: 'Get a glass of water and drink it slowly.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Lie down for a short rest',
+      whyThisFits: 'Low energy deserves a real pause, not another task.',
+      firstStep: 'Find a comfortable spot to lie down for a bit.',
+      durationMinutes: 15,
+    },
+  ],
+  excited: [
+    {
+      title: 'Move that energy',
+      whyThisFits: 'Excitement wants somewhere to go, so give it a physical outlet.',
+      firstStep: 'Put on a song and move however feels good for a few minutes.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Tell someone',
+      whyThisFits: 'Sharing good energy with another person makes it land better.',
+      firstStep: 'Call or message someone and tell them what has you excited.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Start the thing',
+      whyThisFits: 'Riding this energy into action beats letting it fizzle out.',
+      firstStep: 'Open whatever you have been wanting to work on and do the first step.',
+      durationMinutes: 10,
+    },
+  ],
+  unsure: [
+    {
+      title: 'Check in with your body',
+      whyThisFits: 'When the feeling is hard to name, your body often knows before you do.',
+      firstStep: 'Notice your shoulders, jaw, and stomach. Just notice, nothing to fix.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Name three things nearby',
+      whyThisFits: 'A small, easy task to do while the mood sorts itself out.',
+      firstStep: 'Look around and name three things you can see, hear, or touch.',
+      durationMinutes: 5,
+    },
+    {
+      title: 'Just sit with it',
+      whyThisFits: 'Not every feeling needs a label right away, sitting with it is fine too.',
+      firstStep: 'Find a quiet spot and just be there for a few minutes, no pressure to feel anything specific.',
+      durationMinutes: 10,
+    },
+  ],
 };

@@ -1,4 +1,4 @@
-export type Mood = 'anxious' | 'sad' | 'angry' | 'happy';
+export type Mood = 'anxious' | 'sad' | 'angry' | 'happy' | 'calm' | 'tired' | 'excited' | 'unsure';
 
 export type Energy = 'low' | 'medium' | 'high';
 

@@ -1,6 +1,15 @@
 import type { Mood, Environment } from '../types';
 
-const MOOD_ORDER: Mood[] = ['anxious', 'sad', 'angry', 'happy'];
+const MOOD_ORDER: Mood[] = [
+  'anxious',
+  'sad',
+  'angry',
+  'happy',
+  'calm',
+  'tired',
+  'excited',
+  'unsure',
+];
 const ENV_ORDER: Environment[] = ['urban', 'suburban', 'countryside', 'coastal', 'mountains'];
 
 // Deterministic so the same mood + environment always arrive at the same
