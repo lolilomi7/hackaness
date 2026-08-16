@@ -49,7 +49,23 @@ export default function Concierge({ onComplete }: ConciergeProps) {
         </div>
       )}
 
-      <div className="flex w-full flex-1 flex-col items-center justify-center">
+      <div className="flex w-full flex-1 flex-col items-center justify-center gap-4">
+        {/* Persistent across turns — only nods per question, never fully exits */}
+        <ConciergeAvatar bob={turn.key} />
+
+        <div className="flex items-center gap-2">
+          {TURNS.map((t, i) => (
+            <span
+              key={t.key}
+              className="h-1.5 rounded-full transition-all"
+              style={{
+                width: i === turnIndex ? 18 : 6,
+                background: i <= turnIndex ? HOTEL_COLORS.brass : HOTEL_COLORS.brassDim,
+              }}
+            />
+          ))}
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={turn.key}
@@ -59,21 +75,19 @@ export default function Concierge({ onComplete }: ConciergeProps) {
             transition={{ duration: 0.3 }}
             className="flex w-full flex-col items-center gap-4 text-center"
           >
-            <ConciergeAvatar bob={turn.key} />
-            <p className={`${HOTEL_SERIF} text-lg`} style={{ color: HOTEL_COLORS.parchment }}>
-              {turn.prompt}
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
+            <p className={`${HOTEL_SERIF} text-lg`} style={{ color: HOTEL_COLORS.parchment }}>{turn.prompt}</p>
+            <div className="flex flex-wrap justify-center gap-2.5">
               {turn.options.map((opt) => (
-                <button
+                <motion.button
                   key={opt.label}
                   type="button"
                   onClick={() => handleReply(opt.label, opt.value)}
-                  className="rounded-full border px-4 py-2 text-sm"
+                  whileTap={{ scale: 0.95 }}
+                  className="rounded-full border px-5 py-2.5 text-sm"
                   style={{ borderColor: HOTEL_COLORS.brass, color: HOTEL_COLORS.parchment }}
                 >
                   {opt.label}
-                </button>
+                </motion.button>
               ))}
             </div>
           </motion.div>

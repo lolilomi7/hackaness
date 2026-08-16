@@ -1,8 +1,8 @@
-const WALL = '#3a2a1c';
-const PANEL_LINE = '#573f29';
+const WALL = '#efe4ff';
+const PANEL_LINE = '#c9a8f0';
 const RAIL = '#c9a465';
-const PLANT_POT = '#6b4a2f';
-const LEAF = '#4a7c4e';
+const PLANT_POT = '#a985c9';
+const LEAF = '#6b9b6e';
 
 export default function ElevatorInterior() {
   return (
@@ -16,7 +16,7 @@ export default function ElevatorInterior() {
         <line key={x} x1={x} y1="0" x2={x} y2="170" stroke={PANEL_LINE} strokeWidth="2" />
       ))}
       <rect x="20" y="90" width="160" height="6" rx="3" fill={RAIL} />
-      <ellipse cx="100" cy="8" rx="30" ry="8" fill="#f3e9d8" opacity="0.15" />
+      <ellipse cx="100" cy="8" rx="30" ry="8" fill="#ffffff" opacity="0.35" />
 
       {/* small potted plant, bottom-left corner */}
       <rect x="14" y="140" width="18" height="16" rx="2" fill={PLANT_POT} />

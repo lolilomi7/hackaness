@@ -2,17 +2,20 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { HOTEL_COLORS, HOTEL_SERIF } from '../theme';
 import ElevatorInterior from '../components/ElevatorInterior';
-import { WELCOME_MS, DOOR_ANIM_S, TICK_MS } from '../elevatorTiming';
+import FloorDigit from '../components/FloorDigit';
+import { WELCOME_MS, DOOR_ANIM_S, TICK_MS, FAST_TICK_MS } from '../elevatorTiming';
 
 interface ElevatorProps {
   arriving?: boolean;
+  targetFloor: number;
+  onArrived?: () => void;
 }
 
 type Phase = 'welcome' | 'ascend' | 'arrive';
 
-const DOOR = '#241a12';
+const DOOR = '#9b6fd1';
 
-export default function Elevator({ arriving = false }: ElevatorProps) {
+export default function Elevator({ arriving = false, targetFloor, onArrived }: ElevatorProps) {
   const [phase, setPhase] = useState<Phase>('welcome');
   const [floor, setFloor] = useState(1);
 
@@ -23,13 +26,24 @@ export default function Elevator({ arriving = false }: ElevatorProps) {
 
   useEffect(() => {
     if (phase !== 'ascend') return;
-    const id = setInterval(() => setFloor((f) => f + 1), TICK_MS);
+    // Once the real answer is ready, tick faster to catch up to the real
+    // floor instead of jumping there — never skips numbers, just sprints.
+    const id = setInterval(
+      () => setFloor((f) => Math.min(f + 1, targetFloor)),
+      arriving ? FAST_TICK_MS : TICK_MS,
+    );
     return () => clearInterval(id);
-  }, [phase]);
+  }, [phase, arriving, targetFloor]);
 
   useEffect(() => {
-    if (arriving && phase === 'ascend') setPhase('arrive');
-  }, [arriving, phase]);
+    if (arriving && phase === 'ascend' && floor >= targetFloor) setPhase('arrive');
+  }, [arriving, phase, floor, targetFloor]);
+
+  useEffect(() => {
+    if (phase !== 'arrive') return;
+    const id = setTimeout(() => onArrived?.(), DOOR_ANIM_S * 1000 + 100);
+    return () => clearTimeout(id);
+  }, [phase, onArrived]);
 
   const doorsClosed = phase === 'ascend';
 
@@ -52,7 +66,7 @@ export default function Elevator({ arriving = false }: ElevatorProps) {
         transition={{ duration: DOOR_ANIM_S, ease: 'easeInOut' }}
       />
 
-      {phase === 'ascend' && (
+      {(phase === 'ascend' || phase === 'arrive') && (
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center gap-4"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -67,16 +81,9 @@ export default function Elevator({ arriving = false }: ElevatorProps) {
           >
             &#9650;
           </motion.span>
-          <div
-            className="flex h-20 w-20 items-center justify-center rounded border-2"
-            style={{ borderColor: HOTEL_COLORS.brass, background: HOTEL_COLORS.panelDeep }}
-          >
-            <span className={`${HOTEL_SERIF} text-4xl`} style={{ color: HOTEL_COLORS.parchment }}>
-              {floor}
-            </span>
-          </div>
+          <FloorDigit floor={floor} />
           <p className={`${HOTEL_SERIF} text-sm italic`} style={{ color: HOTEL_COLORS.parchmentDim }}>
-            Ascending to your floor…
+            {phase === 'ascend' ? 'Ascending to your floor…' : 'Here we are'}
           </p>
         </motion.div>
       )}

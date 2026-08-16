@@ -1,23 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Mood, Recommendation, UserContext } from './types';
 import GradientBackground from './components/GradientBackground';
-import MoodScreen from './screens/MoodScreen';
-import QuestionsScreen from './screens/QuestionsScreen';
-import LoadingScreen from './screens/LoadingScreen';
-import ResultsScreen from './screens/ResultsScreen';
-import HotelCheckIn from './hotel/screens/CheckIn';
-import HotelConcierge from './hotel/screens/Concierge';
-import HotelElevator from './hotel/screens/Elevator';
-import { ARRIVE_HOLD_MS } from './hotel/elevatorTiming';
+import StepScreen from './hotel/StepScreen';
+import { HOTEL_COLORS } from './hotel/theme';
 import { getRecommendations } from './lib/ai';
 
-// Flip to preview the hotel reskin. Screens not yet ported under src/hotel/
-// still fall back to the classic UI for that step.
+// Flip to preview the hotel reskin (falls back to classic per-step).
 const HOTEL_UI = true;
 
 type Step = 'mood' | 'questions' | 'loading' | 'results';
-
 const fadeVariants = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -29,6 +21,7 @@ export default function App() {
   const [context, setContext] = useState<Partial<UserContext>>({});
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [arriving, setArriving] = useState(false);
+  const arrivedResolverRef = useRef<(() => void) | null>(null);
 
   const handleMoodSelect = (mood: Mood) => {
     setContext((prev) => ({ ...prev, mood }));
@@ -43,12 +36,19 @@ export default function App() {
     const results = await getRecommendations(fullContext);
     setRecommendations(results);
     if (HOTEL_UI) {
-      // Let the elevator doors finish their "arrive" animation before we
-      // swap screens, so they visibly open onto the results.
+      // Wait for the elevator to actually finish its own arrival, rather
+      // than guessing a fixed delay that could cut it short or run long.
       setArriving(true);
-      await new Promise((resolve) => setTimeout(resolve, ARRIVE_HOLD_MS));
+      await new Promise<void>((resolve) => {
+        arrivedResolverRef.current = resolve;
+      });
     }
     setStep('results');
+  };
+
+  const handleElevatorArrived = () => {
+    arrivedResolverRef.current?.();
+    arrivedResolverRef.current = null;
   };
 
   const handleRestart = () => {
@@ -59,7 +59,11 @@ export default function App() {
 
   return (
     <div className="relative min-h-svh">
-      <GradientBackground mood={context.mood} environment={context.environment} />
+      {HOTEL_UI ? (
+        <div className="fixed inset-0 -z-10" style={{ background: HOTEL_COLORS.panel }} />
+      ) : (
+        <GradientBackground mood={context.mood} environment={context.environment} />
+      )}
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -69,23 +73,17 @@ export default function App() {
           exit="exit"
           transition={{ duration: 0.3 }}
         >
-          {step === 'mood' &&
-            (HOTEL_UI ? (
-              <HotelCheckIn onSelect={handleMoodSelect} />
-            ) : (
-              <MoodScreen onSelect={handleMoodSelect} />
-            ))}
-          {step === 'questions' &&
-            (HOTEL_UI ? (
-              <HotelConcierge onComplete={handleQuestionsComplete} />
-            ) : (
-              <QuestionsScreen onComplete={handleQuestionsComplete} />
-            ))}
-          {step === 'loading' &&
-            (HOTEL_UI ? <HotelElevator arriving={arriving} /> : <LoadingScreen />)}
-          {step === 'results' && (
-            <ResultsScreen recommendations={recommendations} onRestart={handleRestart} />
-          )}
+          <StepScreen
+            hotelUI={HOTEL_UI}
+            step={step}
+            context={context}
+            recommendations={recommendations}
+            arriving={arriving}
+            onMoodSelect={handleMoodSelect}
+            onQuestionsComplete={handleQuestionsComplete}
+            onRestart={handleRestart}
+            onElevatorArrived={handleElevatorArrived}
+          />
         </motion.div>
       </AnimatePresence>
     </div>
